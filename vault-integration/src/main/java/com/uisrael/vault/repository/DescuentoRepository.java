@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DescuentoRepository extends JpaRepository<Descuento, Integer> {
+public interface DescuentoRepository extends JpaRepository<Descuento, Long> {  // CAMBIADO: Integer → Long
     
-    // Buscar descuentos por producto
-    List<Descuento> findByIdProducto(Integer idProducto);
+    // Buscar descuentos por producto - CAMBIADO: Integer → Long
+    List<Descuento> findByIdProducto(Long idProducto);
     
     // Buscar descuentos activos
     List<Descuento> findByEstadoTrue();
@@ -22,17 +22,17 @@ public interface DescuentoRepository extends JpaRepository<Descuento, Integer> {
     // Buscar descuentos inactivos
     List<Descuento> findByEstadoFalse();
     
-    // Buscar descuento activo de un producto específico
-    Optional<Descuento> findByIdProductoAndEstadoTrue(Integer idProducto);
+    // Buscar descuento activo de un producto específico - CAMBIADO: Integer → Long
+    Optional<Descuento> findByIdProductoAndEstadoTrue(Long idProducto);
     
     // Buscar descuentos con porcentaje mayor a X
     List<Descuento> findByPorcentajeGreaterThan(BigDecimal porcentaje);
     
-    // Verificar si un producto tiene descuento activo
-    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM descuentos d WHERE d.idProducto = :idProducto AND d.estado = true")
-    boolean existsDescuentoActivo(@Param("idProducto") Integer idProducto);
+    // Verificar si un producto tiene descuento activo - CORREGIDO
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Descuento d WHERE d.idProducto = :idProducto AND d.estado = true")
+    boolean existsDescuentoActivo(@Param("idProducto") Long idProducto);  // CAMBIADO: Integer → Long
     
-    // Obtener todos los productos con sus descuentos (JPQL)
+    // Obtener todos los productos con sus descuentos
     @Query("SELECT p, d FROM Producto p LEFT JOIN Descuento d ON p.id = d.idProducto")
     List<Object[]> findProductosConDescuentos();
     
@@ -43,6 +43,17 @@ public interface DescuentoRepository extends JpaRepository<Descuento, Integer> {
     // Buscar por observación (like)
     List<Descuento> findByObservacionContaining(String texto);
     
-    // Eliminar descuentos de un producto
-    void deleteByIdProducto(Integer idProducto);
+    // Eliminar descuentos de un producto - CAMBIADO: Integer → Long
+    void deleteByIdProducto(Long idProducto);
+    
+    // ===== MÉTODOS ADICIONALES ÚTILES =====
+    
+    // Versión simplificada sin @Query (Spring genera automáticamente)
+    boolean existsByIdProductoAndEstadoTrue(Long idProducto);
+    
+    // Contar descuentos activos de un producto
+    long countByIdProductoAndEstadoTrue(Long idProducto);
+    
+    // Buscar descuentos por rango de porcentaje
+    List<Descuento> findByPorcentajeBetween(BigDecimal min, BigDecimal max);
 }

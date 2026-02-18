@@ -1,0 +1,38 @@
+# Ve a la raíz de tu proyecto
+cd /e/Proyectos_microservisios/microservices-spring
+
+# Crea el archivo .gitignore
+cat > .gitignore << 'EOF'
+# Compiled files
+*.class
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Application properties (NO subir credenciales)
+**/application.properties
+**/bootstrap.properties
+
+# Database
+*.bak
+*.sql
+
+# OS
+.DS_Store
+Thumbs.db
+EOF
